@@ -16,6 +16,6 @@
 * Express-rate-limit
 * Helmet 
 
-IP: 51.250.101.24
-Link: api.movies-kirill.nomoreparties.co
+IP: 51.250.101.24 <br />
+Link: api.movies-kirill.nomoreparties.co <br />
 Link git: https://github.com/kirillye/movies-explorer-api
