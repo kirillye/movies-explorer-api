@@ -102,17 +102,17 @@ const login = (req, res, next) => {
 };
 
 // Возможность выйти
-const signOut = (req, res, next) => res
-  .clearCookie('jwt')
-  .status(200)
-  .send({ message: 'Пользователь успешно вышел с сайта' })
-  .catch(next);
+// const signOut = (req, res, next) => res
+//   .clearCookie('jwt')
+//   .status(200)
+//   .send({ message: 'Пользователь успешно вышел с сайта' })
+//   .catch(next);
 
 module.exports = {
   getUserInfo,
   createUsers,
   login,
-  signOut,
+  // signOut,
   updateUserById,
   // deleteUserById,
 };

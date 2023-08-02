@@ -5,7 +5,7 @@ const {
   getUserInfo,
   createUsers,
   login,
-  signOut,
+  // signOut,
   updateUserById,
   // deleteUserById,
 } = require('../controllers/users');
@@ -57,7 +57,7 @@ router.post(
 );
 
 // разлогинирование
-router.post('/signout', auth, signOut);
+// router.post('/signout', auth, signOut);
 
 // краш-тест
 router.get('/crash-test', auth, () => {
