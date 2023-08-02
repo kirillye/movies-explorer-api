@@ -1,18 +1,18 @@
-const router = require("express").Router();
-const auth = require("../middlewares/auth");
-const { celebrate, Joi } = require("celebrate");
+const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+const auth = require('../middlewares/auth');
 const {
   getMovies,
   createMovie,
   deleteMovie,
-} = require("../controllers/movies");
+} = require('../controllers/movies');
 
 // возвращает все сохранённые текущим пользователем фильмы
-router.get("", auth, getMovies);
+router.get('', auth, getMovies);
 
 // создаёт карточку
 router.post(
-  "",
+  '',
   auth,
   celebrate({
     body: Joi.object().keys({
@@ -27,29 +27,29 @@ router.post(
       image: Joi.string()
         .required()
         .pattern(
-          //eslint-disable-next-line
+          // eslint-disable-next-line
           /(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/
         ),
       trailerLink: Joi.string()
         .required()
         .pattern(
-          //eslint-disable-next-line
+          // eslint-disable-next-line
           /(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/
         ),
       thumbnail: Joi.string()
         .required()
         .pattern(
-          //eslint-disable-next-line
+          // eslint-disable-next-line
           /(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/
         ),
     }),
   }),
-  createMovie
+  createMovie,
 );
 
 // удаляет карточку по идентификатору
 router.delete(
-  "/:movieId",
+  '/:movieId',
   auth,
   celebrate({
     params: Joi.object().keys({
@@ -60,7 +60,7 @@ router.delete(
         .pattern(/[a-z][0-9]+/),
     }),
   }),
-  deleteMovie
+  deleteMovie,
 );
 
 module.exports = router;

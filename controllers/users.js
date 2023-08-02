@@ -1,17 +1,17 @@
-const User = require("../models/User");
-const { generateToken } = require("../utils/jwt");
-const bcrypt = require("bcryptjs");
-const BadRequest = require("../errors/bad-request-error");
-const NotFound = require("../errors/not-found-error");
-const Conflict = require("../errors/conflict-error");
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+const { generateToken } = require('../utils/jwt');
+const BadRequest = require('../errors/bad-request-error');
+const NotFound = require('../errors/not-found-error');
+const Conflict = require('../errors/conflict-error');
 
 // возвращает информацию о пользователе (email и имя)
 const getUserInfo = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
-      const {name, email} = user
-      return res.status(200).send({name, email});
+      const { name, email } = user;
+      return res.status(200).send({ name, email });
     })
     .catch(next);
 };
@@ -28,22 +28,22 @@ const updateUserById = (req, res, next) => {
   })
     .then((user) => {
       if (!user) {
-        throw new NotFound("Пользователь не найден");
+        throw new NotFound('Пользователь не найден');
       }
-      const {name, email} = user
+      const { name = 'Имя пользователя', email = 'Email' } = user;
       return res.status(200).send({ name, email });
     })
     .catch((err) => {
-      if (err.name == "ValidationError") {
+      if (err.name === 'ValidationError') {
         return next(
           new BadRequest(
             `${Object.values(err.errors)
-              .map((err) => err.message)
-              .join()}`
-          )
+              .map((error) => error.message)
+              .join()}`,
+          ),
         );
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -59,22 +59,21 @@ const createUsers = (req, res, next) => {
         name: req.body.name,
       })
         .then((newUser) => {
-          //eslint-disable-next-line
+          // eslint-disable-next-line
           const { password, ...others } = newUser._doc;
           return res.status(201).send(others);
         })
         .catch((err) => {
-          console.log(err)
           if (err.code === 11000) {
-            return next(new Conflict("Пользователь уже зарегистрирован"));
+            return next(new Conflict('Пользователь уже зарегистрирован'));
           }
-          if (err.name === "ValidationError") {
-            if(err.message.includes('Path `name` is required')) {
-              return next(new Conflict("Поле 'name' является обязательным"));
+          if (err.name === 'ValidationError') {
+            if (err.message.includes('Path `name` is required')) {
+              return next(new Conflict('Поле name является обязательным'));
             }
             return next(new Conflict(err.message));
           }
-          next(err);
+          return next(err);
         });
     })
     .catch();
@@ -92,25 +91,22 @@ const login = (req, res, next) => {
 
       // Токен через cookies
       return res
-        .cookie("jwt", token, {
+        .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: true,
         })
-        .send({ message: "Авторизация прошла успешна!" });
+        .send({ message: 'Авторизация прошла успешна!' });
     })
     .catch(next);
 };
 
 // Возможность выйти
-const signOut = (req, res, next) => {
-  return res
-    .clearCookie("jwt")
-    .status(200)
-    .send({ message: "Пользователь успешно вышел с сайта" })
-    .catch(next);
-};
-
+const signOut = (req, res, next) => res
+  .clearCookie('jwt')
+  .status(200)
+  .send({ message: 'Пользователь успешно вышел с сайта' })
+  .catch(next);
 
 module.exports = {
   getUserInfo,

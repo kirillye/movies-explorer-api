@@ -1,6 +1,6 @@
-const router = require("express").Router();
-const auth = require("../middlewares/auth");
-const { celebrate, Joi } = require("celebrate");
+const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+const auth = require('../middlewares/auth');
 const {
   getUserInfo,
   createUsers,
@@ -8,15 +8,14 @@ const {
   signOut,
   updateUserById,
   // deleteUserById,
-} = require("../controllers/users");
+} = require('../controllers/users');
 
 // Информация о пользователе
-router.get("/users/me", auth, getUserInfo);
-
+router.get('/users/me', auth, getUserInfo);
 
 // обновляет профиль
 router.patch(
-  "/users/me",
+  '/users/me',
   auth,
   celebrate({
     body: Joi.object().keys({
@@ -24,13 +23,12 @@ router.patch(
       name: Joi.string().required().min(2).max(30),
     }),
   }),
-  updateUserById
+  updateUserById,
 );
-
 
 // создание пользователя
 router.post(
-  "/signup",
+  '/signup',
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email({ minDomainSegments: 2 }),
@@ -38,33 +36,33 @@ router.post(
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(3).max(30),
       avatar: Joi.string().pattern(
-        //eslint-disable-next-line
-        /(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/
+        // eslint-disable-next-line
+        /(?:http|https):\/\/((?:[\w-]+)(?:\.[\w-]+)+)(?:[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/,
       ),
     }),
   }),
-  createUsers
+  createUsers,
 );
 
 // авторизация
 router.post(
-  "/signin",
+  '/signin',
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email({ minDomainSegments: 2 }),
       password: Joi.string().required().min(8),
     }),
   }),
-  login
+  login,
 );
 
 // разлогинирование
-router.post("/signout", signOut);
+router.post('/signout', auth, signOut);
 
 // краш-тест
-router.get("/crash-test", () => {
+router.get('/crash-test', auth, () => {
   setTimeout(() => {
-    throw new Error("Сервер сейчас упадёт");
+    throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
 

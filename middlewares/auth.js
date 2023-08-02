@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+
 const { JWT_SECRET } = process.env;
-const AuthError = require("../errors/auth-error");
+const AuthError = require('../errors/auth-error');
 
 module.exports = (req, res, next) => {
   // Отправка токена в ответе
@@ -11,19 +12,18 @@ module.exports = (req, res, next) => {
   let payload;
 
   if (!token) {
-    return next(new AuthError("Необходимо авторизоваться"));
+    return next(new AuthError('Необходимо авторизоваться'));
   }
 
   try {
     payload = jwt.verify(token, JWT_SECRET);
-    console.log(payload);
   } catch (err) {
     return next(
-      new AuthError("Необходимо авторизоваться или куки не были распарсены")
+      new AuthError('Необходимо авторизоваться или куки не были распарсены'),
     );
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
 
-  next(); // пропускаем запрос дальше
+  return next(); // пропускаем запрос дальше
 };
