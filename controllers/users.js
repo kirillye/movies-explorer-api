@@ -1,9 +1,9 @@
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-const { generateToken } = require('../utils/jwt');
-const BadRequest = require('../errors/bad-request-error');
-const NotFound = require('../errors/not-found-error');
-const Conflict = require('../errors/conflict-error');
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+const { generateToken } = require("../utils/jwt");
+const BadRequest = require("../errors/bad-request-error");
+const NotFound = require("../errors/not-found-error");
+const Conflict = require("../errors/conflict-error");
 
 // возвращает информацию о пользователе (email и имя)
 const getUserInfo = (req, res, next) => {
@@ -28,13 +28,13 @@ const updateUserById = (req, res, next) => {
   })
     .then((user) => {
       if (!user) {
-        throw new NotFound('Пользователь не найден');
+        throw new NotFound("Пользователь не найден");
       }
-      const { name = 'Имя пользователя', email = 'Email' } = user;
+      const { name = "Имя пользователя", email = "Email" } = user;
       return res.status(200).send({ name, email });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === "ValidationError") {
         return next(
           new BadRequest(
             `${Object.values(err.errors)
@@ -65,11 +65,11 @@ const createUsers = (req, res, next) => {
         })
         .catch((err) => {
           if (err.code === 11000) {
-            return next(new Conflict('Пользователь уже зарегистрирован'));
+            return next(new Conflict("Пользователь уже зарегистрирован"));
           }
-          if (err.name === 'ValidationError') {
-            if (err.message.includes('Path `name` is required')) {
-              return next(new Conflict('Поле name является обязательным'));
+          if (err.name === "ValidationError") {
+            if (err.message.includes("Path `name` is required")) {
+              return next(new Conflict("Поле name является обязательным"));
             }
             return next(new Conflict(err.message));
           }
@@ -86,33 +86,35 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = generateToken(user);
+      const { password, ...others } = user._doc;
       // отправка токена в ответе
       // return res.send({token})
 
       // Токен через cookies
       return res
-        .cookie('jwt', token, {
+        .cookie("jwt", token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: true,
         })
-        .send({ message: 'Авторизация прошла успешна!' });
+        .send(others);
     })
     .catch(next);
 };
 
 // Возможность выйти
-// const signOut = (req, res, next) => res
-//   .clearCookie('jwt')
-//   .status(200)
-//   .send({ message: 'Пользователь успешно вышел с сайта' })
-//   .catch(next);
+const signOut = (req, res, next) =>
+  res
+    .clearCookie("jwt")
+    .status(200)
+    .send({ message: "Пользователь успешно вышел с сайта" })
+    .catch(next);
 
 module.exports = {
   getUserInfo,
   createUsers,
   login,
-  // signOut,
+  signOut,
   updateUserById,
   // deleteUserById,
 };

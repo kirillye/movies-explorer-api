@@ -1,21 +1,21 @@
-const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
-const auth = require('../middlewares/auth');
+const router = require("express").Router();
+const { celebrate, Joi } = require("celebrate");
+const auth = require("../middlewares/auth");
 const {
   getUserInfo,
   createUsers,
   login,
-  // signOut,
+  signOut,
   updateUserById,
   // deleteUserById,
-} = require('../controllers/users');
+} = require("../controllers/users");
 
 // Информация о пользователе
-router.get('/users/me', auth, getUserInfo);
+router.get("/users/me", auth, getUserInfo);
 
 // обновляет профиль
 router.patch(
-  '/users/me',
+  "/users/me",
   auth,
   celebrate({
     body: Joi.object().keys({
@@ -28,7 +28,7 @@ router.patch(
 
 // создание пользователя
 router.post(
-  '/signup',
+  "/signup",
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email({ minDomainSegments: 2 }),
@@ -46,7 +46,7 @@ router.post(
 
 // авторизация
 router.post(
-  '/signin',
+  "/signin",
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email({ minDomainSegments: 2 }),
@@ -57,12 +57,12 @@ router.post(
 );
 
 // разлогинирование
-// router.post('/signout', auth, signOut);
+router.post("/signout", signOut);
 
 // краш-тест
-router.get('/crash-test', auth, () => {
+router.get("/crash-test", auth, () => {
   setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
+    throw new Error("Сервер сейчас упадёт");
   }, 0);
 });
 

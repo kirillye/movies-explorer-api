@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 // eslint-disable-next-line
-const validator = require('validator');
-const uniqueValidator = require('mongoose-unique-validator');
+const validator = require("validator");
+const uniqueValidator = require("mongoose-unique-validator");
 
 const movieSchema = new mongoose.Schema({
   nameRU: {
@@ -34,6 +34,7 @@ const movieSchema = new mongoose.Schema({
   },
   movieId: {
     type: Number,
+    unique: true,
     required: true,
   },
   image: {
@@ -46,7 +47,7 @@ const movieSchema = new mongoose.Schema({
           v,
         );
       },
-      message: 'Некорректный URL',
+      message: "Некорректный URL",
     },
   },
   trailerLink: {
@@ -59,7 +60,7 @@ const movieSchema = new mongoose.Schema({
           v,
         );
       },
-      message: 'Некорректный URL',
+      message: "Некорректный URL",
     },
   },
   thumbnail: {
@@ -72,15 +73,15 @@ const movieSchema = new mongoose.Schema({
           v,
         );
       },
-      message: 'Некорректный URL',
+      message: "Некорректный URL",
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'user',
+    ref: "user",
   },
 });
 
 movieSchema.plugin(uniqueValidator);
-module.exports = mongoose.model('movie', movieSchema);
+module.exports = mongoose.model("movie", movieSchema);
